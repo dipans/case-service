@@ -1,23 +1,23 @@
 apiVersion: "apps/v1"
 kind: "Deployment"
 metadata:
-  name: "case-service"
+  name: "caseservice"
   namespace: "default"
   labels:
-    app: "case-service"
+    app: "caseservice"
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "case-service"
+      app: "caseservice"
   template:
     metadata:
       labels:
-        app: "case-service"
+        app: "caseservice"
     spec:
       containers:
-      - name: "case-service"
-        image: "dipandocker/case-service:v1"
+      - name: "caseservice"
+        image: "dipandocker/caseservice:latest"
         imagePullPolicy: Always
         ports:
         - containerPort: 8000
@@ -26,29 +26,29 @@ spec:
 apiVersion: "v1"
 kind: "Service"
 metadata:
-  name: "case-service-lb"
+  name: "caseservice-lb"
   namespace: "default"
   labels:
-    app: "case-service"
+    app: "caseservice"
 spec:
   ports:
   - protocol: "TCP"
     port: 80
     targetPort: 8000
   selector:
-    app: "case-service"
+    app: "caseservice"
   type: "LoadBalancer"
 
 ---
 apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
-  name: "postgres-config"
+  name: "postgresconfig"
   namespace: "default"
   labels:
     app: "postgres"
 data:
-  POSTGRES_DB: "case_service"
+  POSTGRES_DB: "caseservice"
   POSTGRES_USER: "postgres"
   POSTGRES_PASSWORD: "password"
 
