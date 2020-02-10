@@ -17,9 +17,7 @@ pipeline {
         }
 	    
         stage('Building Image') {
-            agent { 
-                'linux'
-            }
+            
             steps {
                 script {                
                     docker.withRegistry('https://registry.hub.docker.com/repository/docker/dipandocker/caseservice', 'static-dockerhub') {
