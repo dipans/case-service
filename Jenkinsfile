@@ -1,32 +1,32 @@
 pipeline {
-    agent { docker { image 'python:3.8-slim-buster' } }
+    agent none
     stages {
         stage ("Install dependencies") {
+            agent { 
+                docker { image 'python:3.8-slim-buster' } 
+            }
             steps {
                 sh '''
                     python3 -m venv venv
                     . venv/bin/activate
                     pip install --upgrade pip &&\
                                 pip install -r requirements.txt
-                    
+                    pylint --disable=R,C,W1203,W1202 app.py 
                 '''  
-            }
-        }
-        stage('Linting') {
-            steps {
-            sh '''
-                . venv/bin/activate
-                pylint --disable=R,C,W1203,W1202 app.py 
-            '''
             }
         }
 	    
         stage('Building Image') {
+            agent { 
+                'Linux'
+            }
             steps {
-                script {
-                    def dockerHome = tool 'default-docker'
-                    env.PATH = "${dockerHome}/bin:${env.PATH}"
-                    docker.build("dipandocker/case-service")
+                script {                
+                    docker.withRegistry('https://registry.hub.docker.com/repository/docker/dipandocker/caseservice', 'static-dockerhub') {
+                        def customImage = docker.build("dipandocker/caseservice")
+                        /* Push the container to the custom Registry */
+                        customImage.push()
+                    }
                 }	
             }
         }
