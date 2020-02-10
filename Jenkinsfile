@@ -18,7 +18,7 @@ pipeline {
 	    
         stage('Building Image') {
             agent { 
-                'Linux'
+                'linux'
             }
             steps {
                 script {                
